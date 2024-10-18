@@ -2,17 +2,18 @@ import { useState } from "react";
 import sortByEnum from "../enums/sortByEnum";
 import orderEnum from "../enums/orderEnum";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
+import { useDispatch } from "react-redux";
+import { setOrder, setSortBy } from "../redux/slices/filterSlice";
 
 interface SortType {
   order: orderEnum,
   sortBy: sortByEnum,
-  setOrder: (arg: orderEnum) => void,
-  setSortBy: (arg: sortByEnum) => void
 }
 
-function Sort({order, setOrder, sortBy, setSortBy}: SortType) {
+function Sort({order, sortBy}: SortType) {
     const [isForm, setIsForm] = useState<boolean>(false);
     const sortTypes = Object.values(sortByEnum);
+    const dispatch = useDispatch()
     
 
     return (
@@ -29,7 +30,11 @@ function Sort({order, setOrder, sortBy, setSortBy}: SortType) {
                   <li className={"sort-item"} key={i}>
                     <button
                       className={sortBy === e ? "sort-active" : "sort-item-button"}
-                      onClick={() => setSortBy(e)}>
+                      onClick={() => {
+                        dispatch(setSortBy(e))
+                        setIsForm(false)
+                      }
+                    }>               
                       {e}
                     </button>
                   </li>
@@ -43,11 +48,11 @@ function Sort({order, setOrder, sortBy, setSortBy}: SortType) {
             <GoTriangleDown
               title="By ascending"
               className={order === "asc" ? "sort-order-active" : ""}
-              onClick={() => setOrder(orderEnum.ASCENDENT)}/>
+              onClick={() => dispatch(setOrder(orderEnum.ASCENDENT))}/>
             <GoTriangleUp
               title="By descending"
               className={order === "desc" ? "sort-order-active" : ""}
-              onClick={() => setOrder(orderEnum.DESCENDENT)}/>
+              onClick={() => dispatch(setOrder(orderEnum.DESCENDENT))}/>
           </div>
         </div>
       );

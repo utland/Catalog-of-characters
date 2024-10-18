@@ -1,6 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import CharacterType from "../interfaces/CharacterType";
 import ModalOperations from "../context/modalOperations";
+import { useSelector } from "react-redux";
+import { IRootState } from "../interfaces/ReduxDefaultTypes";
 
 interface CharacterCardType {
     character: CharacterType
@@ -8,17 +10,15 @@ interface CharacterCardType {
 
 function CharacterCard({character}: CharacterCardType) {
     const {id, name, vision, rarity}: CharacterType = character;
-    const [isLoaded, setIsLoaded] = useState<boolean>(false)
+    const img = useSelector((state: IRootState) => state.characters.images[name])
 
     const {openModal} = useContext(ModalOperations);
     return(
     <div className="character" onClick={() => openModal(character)}>
         <div className="img-wrapper">
             <img 
-            src={`https://genshin.jmp.blue/characters/${id.toLocaleLowerCase()}/icon-big`}
+            src={img}
             style={{backgroundColor: rarity === 5 ? "rgb(200,124,36" : "rgb(148,112,187)"}}
-            className={isLoaded ? "loaded" : ""}
-            onLoad={() => setIsLoaded(true)}
             />
         </div>
         <h2 className="name">{!id.includes("traveler") ? name : `Traveler (${vision})`}</h2>
